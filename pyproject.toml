@@ -2,6 +2,14 @@
 name = "aifactory_os"
 version = "0.1.0"
 
+[tool.setuptools]
+packages = [
+    "core",
+    "agents",
+    "shared",
+    "clients"
+]
+
 [tool.hatch.build.targets.wheel]
 packages = ["agents", "clients", "core", "shared"]
 
