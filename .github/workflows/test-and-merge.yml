@@ -21,6 +21,10 @@ jobs:
         run: |
           pip install -e ".[test]"
 
+      - name: Install pip-audit
+        run: |
+          pip install pip-audit
+
       - name: Audit dependencies for vulnerabilities
         run: |
           pip-audit --desc --strict
