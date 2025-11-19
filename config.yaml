@@ -1,0 +1,14 @@
+# config.yaml - Master configuration for AI Factory OS
+
+agents:
+  grok-fast:
+    enabled: true
+    timeout: 300
+  gemini:
+    enabled: true
+    model: gemini-3.0-pro-latest
+
+workflow:
+  auto_merge_proposals: false
+  require_review: true
+  git_commit: true

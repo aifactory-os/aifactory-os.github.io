@@ -1,0 +1,39 @@
+# config.yaml - Master configuration for AI Factory OS
+
+agents:
+  grok-fast:
+    enabled: true
+    timeout: 300
+    api_url: "http://127.0.0.1:4242/v1/chat/completions"
+  gemini:
+    enabled: true
+    model: "gemini-3.0-pro-latest"
+    api_key_env: "GEMINI_API_KEY"
+  grok-4.1:
+    enabled: true
+    web_ui: true
+
+workflow:
+  auto_merge_proposals: false
+  require_review: true
+  git_commit: true
+  max_retries: 3
+  default_priority: 10
+
+paths:
+  tasks_dir: "tasks"
+  prompts_dir: "prompts"
+  shared_dir: "shared"
+  proposals_dir: "shared/proposals"
+
+protocol:
+  directories:
+    - grok
+    - gemini
+    - shared
+    - docs
+  ownership:
+    grok: "grok-fast"
+    gemini: "gemini"
+    shared: "any"  # except proposals
+    docs: "any"
