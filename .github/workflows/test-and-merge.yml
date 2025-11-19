@@ -32,7 +32,7 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest -vv
+          PYTHONPATH=. pytest -vv
 
       - name: Auto-merge proposals (if tests pass)
         if: success() && github.event_name == 'push'

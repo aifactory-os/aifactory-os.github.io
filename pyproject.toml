@@ -19,5 +19,4 @@ packages = ["agents", "clients", "core", "shared"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["."]
 addopts = "-vv"
