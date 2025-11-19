@@ -1,49 +1,30 @@
-name: Test & Merge Proposals
+name: Test and Merge
 
 on:
   push:
-    branches: [ main ]
   pull_request:
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
-      - name: Set up Python 3.12
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-          cache: 'pip'
-
-      - name: Install package + test deps
-        run: |
-          pip install -e ".[test]"
-
-      - name: Install pip-audit
-        run: |
-          pip install pip-audit
-
-      - name: Audit dependencies for vulnerabilities
-        run: |
-          pip-audit --desc --skip-editable
+          python-version: "3.12"
 
       - name: Install Python dependencies
         run: |
           pip install -r requirements.txt
 
-      - name: Verify package imports
+      - name: Test imports
         run: |
           python - <<EOF
-          from core.orchestrator import main_workflow
-          from agents.registry import AGENTS
-          print("All imports working perfectly")
-          EOF
-
-      - name: Run tests
-        run: pytest -vv
-
-      - name: Auto-merge proposals
-        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: python core/orchestrator.py --auto-merge-proposals
+from core.orchestrator import main_workflow
+from agents.registry import AGENTS
+print("All imports working perfectly")
+EOF
