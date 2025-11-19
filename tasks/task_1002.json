@@ -1,0 +1,15 @@
+{
+  "task_id": "task_1002",
+  "description": "Make project installable + fix import tests + add proper __init__.py files so CI goes permanently green",
+  "assignee": "grok-fast",
+  "files": [
+    "pyproject.toml",
+    "core/__init__.py",
+    "agents/__init__.py",
+    "clients/__init__.py",
+    "shared/__init__.py",
+    "tests/test_imports.py"
+  ],
+  "status": "pending",
+  "priority": 0
+}

@@ -3,20 +3,21 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "ai-factory-os"
+name = "aifactory-os"
 version = "0.1.0"
-description = "Multi-agent software factory framework"
-readme = "README.md"
-requires-python = ">=3.8"
+description = "Multi-agent software factory"
+requires-python = ">=3.12"
 dependencies = [
+    "fastapi",
+    "uvicorn",
     "rich",
-    "pyyaml",
-    "requests",
-    "google-generativeai"
+    "pyyaml"
 ]
-
-[project.scripts]
-orchestrator = "core.orchestrator:main_workflow"
 
 [tool.hatch.build.targets.wheel]
 packages = ["agents", "clients", "core", "shared"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_paths = ["."]
+addopts = "-vv"
