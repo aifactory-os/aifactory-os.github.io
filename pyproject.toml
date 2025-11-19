@@ -3,20 +3,30 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "aifactory-os"
+name = "aifactory_os"                # <-- MUST be valid Python identifier (no dots, no .github.io)
 version = "0.1.0"
 description = "Multi-agent software factory"
+readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi",
-    "uvicorn",
+    "uvicorn[standard]",
     "rich",
     "pyyaml"
 ]
 
+[project.optional-dependencies]
+test = ["pytest>=8.0", "pytest-cov"]
+
 [tool.hatch.build.targets.wheel]
 packages = ["agents", "clients", "core", "shared"]
 
+# Critical: explicitly declare the package name and root
+[tool.setuptools.packages.find]
+where = ["."]
+
+# pytest config
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-vv"
+pythonpath = ["."]
+addopts = "-ra -vv"

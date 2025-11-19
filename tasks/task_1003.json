@@ -1,0 +1,13 @@
+{
+  "task_id": "task_1003",
+  "description": "PERMANENT CI FIX: correct package name, pythonpath in pytest, robust editable install, verified import step",
+  "assignee": "grok-fast",
+  "files": [
+    "pyproject.toml",
+    ".github/workflows/test-and-merge.yml",
+    "core/__init__.py",
+    "agents/__init__.py"
+  ],
+  "status": "pending",
+  "priority": 0
+}
