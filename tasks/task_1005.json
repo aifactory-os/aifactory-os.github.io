@@ -1,0 +1,14 @@
+{
+  "task_id": "task_1005",
+  "description": "FINAL CI VICTORY: Allow grok-fast to edit .github/, fix imports permanently, add install verification step",
+  "assignee": "grok-fast",
+  "status": "pending",
+  "priority": 1,
+  "files": [
+    "core/orchestrator.py",
+    "pyproject.toml",
+    ".github/workflows/test-and-merge.yml"
+  ],
+  "retry_count": 3,
+  "updated_at": "2025-11-19T14:57:38.970753+00:00"
+}

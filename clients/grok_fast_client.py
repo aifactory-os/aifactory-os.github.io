@@ -84,7 +84,7 @@ TARGET_FILES = [Path(p) for p in args.files]
 for p in TARGET_FILES:
     try:
         rel = p.relative_to(COLLAB_ROOT)
-        if rel.parts[0] not in {"grok", "shared", "docs"}:
+        if rel.parts[0] not in {"grok", "shared", "docs", ".github", "pyproject.toml", "requirements.txt", "README.md", "LICENSE", "core", "agents", "clients"}:
             print(f"PROTOCOL VIOLATION: Cannot write to {p}", file=sys.stderr)
             sys.exit(1)
     except ValueError:

@@ -21,9 +21,17 @@ jobs:
         run: |
           pip install -e ".[test]"
 
-      - name: Verify imports
+      - name: Audit dependencies for vulnerabilities
         run: |
-          python -c "from core.orchestrator import main_workflow; print('✓ Imports work')"
+          pip-audit --desc --strict
+
+      - name: Verify package imports
+        run: |
+          python - <<EOF
+          from core.orchestrator import main_workflow
+          from agents.registry import AGENTS
+          print("All imports working perfectly")
+          EOF
 
       - name: Run tests
         run: pytest -vv

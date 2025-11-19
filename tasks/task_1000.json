@@ -2,7 +2,11 @@
   "task_id": "task_1000",
   "description": "Fix CI: explicitly set up Python 3.12 + cache + install pytest in GitHub Actions workflow",
   "assignee": "grok-fast",
-  "files": [".github/workflows/test-and-merge.yml"],
-  "status": "pending",
-  "priority": 0
+  "files": [
+    ".github/workflows/test-and-merge.yml"
+  ],
+  "status": "completed",
+  "priority": 0,
+  "retry_count": 3,
+  "updated_at": "2025-11-19T14:48:08.027268+00:00"
 }

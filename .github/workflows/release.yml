@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install build twine hatch
+
+      - name: Build package
+        run: hatch build
+
+      - name: Publish to PyPI
+        env:
+          HATCH_INDEX_USER: __token__
+          HATCH_INDEX_AUTH: ${{ secrets.PYPI_API_TOKEN }}
+        run: hatch publish
+
+      - name: Generate SBOM
+        run: |
+          pip install cyclonedx-python
+          cyclonedx-py environment --output-format json --outfile sbom.json
+
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create ${{ github.ref_name }} --generate-notes
+          gh release upload ${{ github.ref_name }} sbom.json

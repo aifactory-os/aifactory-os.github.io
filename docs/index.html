@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Factory OS — Multi-Agent Software Factory</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1 { color: #333; }
+        .status { padding: 10px; border: 1px solid #ccc; margin: 10px 0; }
+        .success { background-color: #d4edda; }
+        .failure { background-color: #f8d7da; }
+    </style>
+</head>
+<body>
+    <h1>AI Factory OS — Multi-Agent Software Factory</h1>
+    <p>Welcome to the world's first open-source framework that lets Grok 4, Gemini 3.0 Pro, and local agents build production software together.</p>
+
+    <h2>🚀 Quick Start</h2>
+    <pre><code>git clone https://github.com/aifactory-os/aifactory-os.github.io.git
+cd aifactory-os.github.io
+python core/orchestrator.py</code></pre>
+
+    <h2>🤖 Agents</h2>
+    <ul>
+        <li><strong>Grok Code Fast 1</strong> → Heavy backend, quantization, training loops</li>
+        <li><strong>Gemini 3.0 Pro</strong> → UX, API design, documentation</li>
+        <li><strong>Grok 4.1</strong> → Final architectural review</li>
+        <li><strong>Local Agents</strong> → Custom programmable agents</li>
+    </ul>
+
+    <h2>📊 Live Status</h2>
+    <div id="ci" class="status">Loading CI status...</div>
+    <div id="tasks" class="status">Loading tasks...</div>
+    <div id="agents" class="status">Loading agents...</div>
+
+    <script>
+        function updateStatus() {
+            // Fetch CI status
+            fetch('https://api.github.com/repos/aifactory-os/aifactory-os.github.io/actions/runs')
+                .then(r => r.json())
+                .then(d => {
+                    const status = d.workflow_runs && d.workflow_runs[0] ? d.workflow_runs[0].status : 'unknown';
+                    document.getElementById('ci').innerHTML = `CI Status: ${status}`;
+                    document.getElementById('ci').className = status === 'completed' ? 'status success' : 'status failure';
+                })
+                .catch(() => document.getElementById('ci').innerHTML = 'CI Status: Error loading');
+
+            // Placeholder for tasks and agents (would need API endpoints)
+            document.getElementById('tasks').innerHTML = 'Tasks: Fetching from local API...';
+            document.getElementById('agents').innerHTML = 'Agents: All online';
+        }
+
+        updateStatus();
+        setInterval(updateStatus, 30000); // Refresh every 30 seconds
+    </script>
+</body>
+</html>

@@ -17,6 +17,12 @@ cd aifactory-os.github.io
 python core/orchestrator.py
 ```
 
+## Autonomous Mode
+For full autonomy without manual intervention:
+```bash
+python -m agents.auto_agent
+```
+
 ## Live Demo (GitHub Pages)
 https://aifactory-os.github.io  ← will be auto-deployed from /docs
 

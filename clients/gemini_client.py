@@ -1,7 +1,22 @@
-# gemini_client.py - Optional direct API client for Gemini 3.0 Pro
+# gemini_client.py - Direct API client for Gemini 3.0 Pro
 
 import os
+import uuid
 import google.generativeai as genai
+
+def gemini_propose(task_description: str, files: list[str]) -> str:
+    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+    model = genai.GenerativeModel("gemini-1.5-pro-exp-0827")  # or 3.0 when live
+    file_contents = "\n\n".join([f"--- {f} ---\n{open(f).read()}" for f in files if os.path.exists(f)])
+    prompt = f"""You are Gemini agent in AI Factory OS.
+Task: {task_description}
+Output ONLY code proposals in this format:
+```python:shared/proposals/gemini_{uuid.uuid4().hex[:8]}.py
+# full code
+```
+"""
+    response = model.generate_content(prompt + "\n\n" + file_contents)
+    return response.text
 
 def call_gemini_api(prompt: str, temperature: float = 0.2) -> str:
     """Direct call to Gemini 3.0 Pro API"""

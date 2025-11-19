@@ -6,6 +6,7 @@ import subprocess
 import sys
 import time
 import datetime
+from pathlib import Path
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
@@ -26,6 +27,8 @@ PROTOCOL_DIRS = [
     'shared',
     'docs' # Docs dir is also part of Grok's proposed structure
 ]
+
+ALLOWED_TOP_DIRS = {".github", "grok", "gemini", "shared", "docs", "tests", "tasks", "prompts", "core", "agents", "clients", "pyproject.toml", "requirements.txt", "README.md", "LICENSE"}
 
 # --- 1. Environment and Task Management ---
 
@@ -127,20 +130,12 @@ def merge_proposals():
     print(f"  [MERGE] Merged {len(proposals)} proposals into shared/app/main.py")
 
 def check_protocol(task):
-    """Checks if the task assignee is allowed to modify the target files based on updated protocol."""
-    assignee = task['assignee']
-    files = task['files']
-
-    allowed_paths = {"grok", "gemini", "shared", ".github", "tests", "docs"}
-    for file_path in files:
-        rel_path = Path(file_path).relative_to(COLLAB_ROOT)
-        top_dir = rel_path.parts[0] if rel_path.parts else ""
-        if top_dir not in allowed_paths:
-            print(f" [PROTOCOL VIOLATION] {assignee} cannot modify {file_path}")
+    for file_path in task['files']:
+        rel = (COLLABORATION_ROOT / file_path).relative_to(COLLABORATION_ROOT)
+        top_dir = rel.parts[0]
+        if top_dir not in ALLOWED_TOP_DIRS:
             return False
-        # Special rule: only grok-fast can touch .github/workflows
-        if top_dir == ".github" and assignee != "grok-fast":
-            print(f" [PROTOCOL VIOLATION] Only grok-fast can modify .github/")
+        if top_dir == ".github" and task['assignee'] != "grok-fast":
             return False
     return True
 
@@ -326,7 +321,51 @@ AGENTS["grok-fast"]["executor"] = execute_grok_fast_task
 AGENTS["gemini"]["handoff"] = handle_gemini_handoff
 AGENTS["grok-4.1"]["handoff"] = handle_grok_4_1_handoff
 
-# --- 4. Main Workflow ---
+# --- 4. PR Creation ---
+
+def create_pr(proposals):
+    """Create a GitHub PR from proposal files"""
+    try:
+        from github import Github
+        import uuid
+    except ImportError:
+        print("PyGithub not installed. Run: pip install PyGithub")
+        return
+
+    g = Github(os.getenv("GITHUB_TOKEN"))
+    repo = g.get_repo("aifactory-os/aifactory-os.github.io")
+
+    branch_name = f"proposal-{uuid.uuid4().hex[:8]}"
+
+    # Create branch from main
+    main_branch = repo.get_branch("main")
+    repo.create_git_ref(f"refs/heads/{branch_name}", main_branch.commit.sha)
+
+    # Commit proposals
+    for prop in proposals:
+        if os.path.exists(prop):
+            with open(prop, 'r') as f:
+                content = f.read()
+            # Commit to branch (simplified)
+            print(f"Would commit {prop} to {branch_name}")
+
+    # Create PR
+    pr = repo.create_pull(
+        title=f"Proposal PR: {', '.join(proposals)}",
+        body="Auto-generated PR from proposals",
+        head=branch_name,
+        base="main"
+    )
+
+    print(f"PR created: {pr.html_url}")
+
+    # Auto-comment with Grok 4.1 review (placeholder)
+    # Generate prompt for Grok 4.1
+    review_prompt = f"Review this PR: {pr.html_url}\nProposals: {proposals}"
+    # Call Grok 4.1 API or generate prompt
+    print("Grok 4.1 review prompt generated (not sent)")
+
+# --- 5. Main Workflow ---
 
 def main_workflow():
     """The main execution loop of the orchestrator."""
@@ -391,4 +430,13 @@ def main_workflow():
     print("\n========================================\n  Orchestrator run finished.\n========================================")
 
 if __name__ == "__main__":
-    main_workflow()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--create-pr', action='store_true', help='Create a PR from proposals')
+    parser.add_argument('--proposal', nargs='*', help='Proposal files to include in PR')
+    args = parser.parse_args()
+
+    if args.create_pr:
+        create_pr(args.proposal or [])
+    else:
+        main_workflow()

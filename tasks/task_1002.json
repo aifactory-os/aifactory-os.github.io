@@ -10,6 +10,6 @@
     "shared/__init__.py",
     "tests/test_imports.py"
   ],
-  "status": "pending",
+  "status": "completed",
   "priority": 0
 }
