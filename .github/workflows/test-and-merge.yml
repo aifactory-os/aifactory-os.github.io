@@ -27,7 +27,7 @@ jobs:
 
       - name: Audit dependencies for vulnerabilities
         run: |
-          pip-audit --desc --strict --ignore-pkg aifactory-os
+          pip-audit --desc --strict --skip-editable
 
       - name: Verify package imports
         run: |
