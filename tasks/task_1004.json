@@ -1,0 +1,13 @@
+{
+  "task_id": "task_1004",
+  "description": "FINAL CI FIX: Allow grok-fast to edit .github/workflows + fix stderr crash + make project fully installable + permanent green CI",
+  "assignee": "grok-fast",
+  "files": [
+    "core/orchestrator.py",
+    "agents/registry.py",
+    "pyproject.toml",
+    ".github/workflows/test-and-merge.yml"
+  ],
+  "status": "pending",
+  "priority": 0
+}

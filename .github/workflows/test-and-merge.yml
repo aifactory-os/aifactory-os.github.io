@@ -8,11 +8,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
@@ -20,23 +17,17 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
 
-      - name: Upgrade pip & install build tools
-        run: |
-          python -m pip install --upgrade pip setuptools wheel
-
-      - name: Install package in editable mode + test deps
+      - name: Install package + test deps
         run: |
           pip install -e ".[test]"
 
-      - name: Verify installation
+      - name: Verify imports
         run: |
-          python -c "from core.orchestrator import main_workflow; print('Import success!')"
+          python -c "from core.orchestrator import main_workflow; print('✓ Imports work')"
 
       - name: Run tests
-        run: |
-          pytest -vv
+        run: pytest -vv
 
-      - name: Auto-merge proposals (only on main + success)
+      - name: Auto-merge proposals
         if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          python core/orchestrator.py --auto-merge-proposals
+        run: python core/orchestrator.py --auto-merge-proposals

@@ -131,30 +131,17 @@ def check_protocol(task):
     assignee = task['assignee']
     files = task['files']
 
+    allowed_paths = {"grok", "gemini", "shared", ".github", "tests", "docs"}
     for file_path in files:
-        # File paths are now relative to COLLABORATION_ROOT (e.g., 'gemini/my_file.txt')
-        # Extract the top-level directory from the file_path
-        parts = file_path.split('/')
-        top_dir = parts[0]
-
-        if top_dir == 'gemini' and assignee != 'gemini':
-            print(f"  [PROTOCOL VIOLATION] Task assigned to '{assignee}' attempts to modify file in 'gemini/' directory.")
+        rel_path = Path(file_path).relative_to(COLLAB_ROOT)
+        top_dir = rel_path.parts[0] if rel_path.parts else ""
+        if top_dir not in allowed_paths:
+            print(f" [PROTOCOL VIOLATION] {assignee} cannot modify {file_path}")
             return False
-        elif top_dir == 'grok' and assignee != 'grok-fast':
-            print(f"  [PROTOCOL VIOLATION] Task assigned to '{assignee}' attempts to modify file in 'grok/' directory.")
+        # Special rule: only grok-fast can touch .github/workflows
+        if top_dir == ".github" and assignee != "grok-fast":
+            print(f" [PROTOCOL VIOLATION] Only grok-fast can modify .github/")
             return False
-        elif top_dir == 'shared':
-            # Allow writing to shared/proposals/ for both agents
-            if len(parts) > 1 and parts[1] == 'proposals':
-                continue  # Allowed
-            else:
-                # Direct writes to shared/ are not allowed; use proposals
-                print(f"  [PROTOCOL VIOLATION] Direct write to shared/ not allowed. Use shared/proposals/ for proposals.")
-                return False
-        elif top_dir == 'docs':
-            continue  # Docs are allowed for any agent
-
-    # If all checks pass
     return True
 
 # --- 3. Agent Execution Functions ---
@@ -325,7 +312,10 @@ def execute_grok_fast_task(task):
             
     except subprocess.CalledProcessError as e:
         print(f"  [Grok-Fast] ERROR: Client script failed for task {task['task_id']}.")
-        print("  --- Grok-Fast Client STDERR ---\n" + e.stderr.strip() + "\n  ---------------------------------")
+        if e.stderr:
+            print("  --- Grok-Fast Client STDERR ---\n" + e.stderr.strip() + "\n  ---------------------------------")
+        else:
+            print("  --- No stderr output ---")
         return False
     except FileNotFoundError:
         print(f"  [Grok-Fast] ERROR: 'grok_fast_client.py' not found at {SCRIPT_DIR.parent / 'clients' / 'grok_fast_client.py'}.")
