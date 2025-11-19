@@ -1,0 +1,57 @@
+{
+  "error_analysis": {
+    "id": "SetuptoolsFlatLayoutError",
+    "command_failed": "pip install -e \".[test]\"",
+    "source_tool": "setuptools",
+    "summary": "Build failed because setuptools auto-discovery found multiple top-level directories in the project root (a 'flat-layout') and could not determine which ones are intended packages.",
+    "conflicting_packages_found": [
+      "core",
+      "agents",
+      "shared",
+      "prompts",
+      "clients"
+    ],
+    "error_log_snippet": "error: Multiple top-level packages discovered in a flat-layout: ['core', 'agents', 'shared', 'prompts', 'clients']."
+  },
+  "resolution_options": [
+    {
+      "solution_id": "1_explicit_packages_config",
+      "strategy": "Configuration (Quick Fix)",
+      "description": "Modify your 'pyproject.toml' (or 'setup.py'/'setup.cfg') to explicitly tell setuptools which directories are packages. This removes the auto-discovery ambiguity.",
+      "file_to_modify": "pyproject.toml",
+      "code_example": {
+        "type": "toml",
+        "snippet": "[tool.setuptools]\npkgs = [\n    \"core\",\n    \"agents\",\n    \"shared\",\n    \"prompts\",\n    \"clients\"\n]\n"
+      },
+      "notes": "This is the most direct fix. You must list all top-level packages you want to include in the distribution."
+    },
+    {
+      "solution_id": "2_custom_discovery_config",
+      "strategy": "Configuration (Flexible)",
+      "description": "Use the 'find' directive in 'pyproject.toml' to set up custom discovery rules, explicitly including your packages.",
+      "file_to_modify": "pyproject.toml",
+      "code_example": {
+        "type": "toml",
+        "snippet": "[tool.setuptools.packages.find]\nwhere = [\"."]\ninclude = [\n    \"core*\",\n    \"agents*\",\n    \"shared*\",\n    \"prompts*\",\n    \"clients*\"\n]\nexclude = [\"tests*\", \"docs*\"]\n"
+      },
+      "notes": "This is more flexible than listing packages explicitly, as it supports wildcards. Ensure 'where' is set to the root ('.') for a flat-layout."
+    },
+    {
+      "solution_id": "3_src_layout_refactor",
+      "strategy": "Refactoring (Best Practice)",
+      "description": "Restructure your project to use a 'src-layout'. This is the modern standard that auto-discovery is designed for.",
+      "steps": [
+        "Create a 'src' directory in your project root.",
+        "Move all your package directories ('core', 'agents', 'shared', 'prompts', 'clients') inside the 'src' directory.",
+        "Update your 'pyproject.toml' to tell setuptools to look inside 'src'."
+      ],
+      "file_to_modify": "pyproject.toml",
+      "code_example": {
+        "type": "toml",
+        "snippet": "[tool.setuptools]\npackage-dir = {\"\" = \"src\"}\n\n[tool.setuptools.packages.find]\nwhere = [\"src\"]\n"
+      },
+      "notes": "This is a structural change but is considered a best practice for Python packaging as it clearly separates package code from other project files (like 'tests', 'docs', 'pyproject.toml')."
+    }
+  ],
+  "recommended_action": "For the quickest fix, implement 'solution_id: 1_explicit_packages_config'. For the long-term, most robust solution, refactor to 'solution_id: 3_src_layout_refactor'."
+}
