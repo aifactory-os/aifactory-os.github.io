@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AIFactory OS – Full Snapshot (Nov 19 2025)</title>
+  <style>body { font-family: system-ui; line-height: 1.6; max-width: 1000px; margin: 40px auto; padding: 20px; }</style>
+</head>
+<body>
+  <h1>AI Factory OS — Live Snapshot</h1>
+  <p><strong>Last updated:</strong> <span id="date"></span></p>
+  <h2>Active Agents</h2>
+  <pre id="agents"></pre>
+  <h2>Task Backlog</h2>
+  <pre id="tasks"></pre>
+  <h2>Architecture Diagram</h2>
+  <img src="architecture/diagram.svg" alt="System architecture">
+
+  <script>
+    document.getElementById("date").textContent = new Date().toISOString();
+    fetch('../agents/registry.py').then(r=>r.text()).then(t=>document.getElementById("agents").textContent = t);
+    fetch('../tasks/').then(r=>r.text()).then(t=>document.getElementById("tasks").innerHTML = t);
+  </script>
+</body>
+</html>

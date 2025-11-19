@@ -1,0 +1,13 @@
+{
+  "task_id": "task_999",
+  "description": "Make the repository instantly readable by any frontier model by adding structured HTML snapshots that Grok 4.1, Gemini 3.0 Pro, Claude, etc. can parse in a single pass.",
+  "assignee": "grok-fast",
+  "files": [
+    "docs/snapshot-latest.html",
+    "docs/agents/registry.html",
+    "docs/tasks/backlog.html",
+    "docs/architecture/diagram.html"
+  ],
+  "status": "pending",
+  "priority": 1
+}

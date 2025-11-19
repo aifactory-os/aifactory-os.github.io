@@ -6,7 +6,11 @@ import subprocess
 import sys
 import time
 import datetime
-from logger import log_task_start, log_success, log_error, log_retry
+
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+
+from core.logger import log_task_start, log_success, log_error, log_retry
 from agents.registry import AGENTS, dispatch_task
 
 # --- Configuration ---
@@ -147,16 +151,13 @@ def check_protocol(task):
                 # Direct writes to shared/ are not allowed; use proposals
                 print(f"  [PROTOCOL VIOLATION] Direct write to shared/ not allowed. Use shared/proposals/ for proposals.")
                 return False
+        elif top_dir == 'docs':
+            continue  # Docs are allowed for any agent
 
     # If all checks pass
     return True
 
 # --- 3. Agent Execution Functions ---
-
-# Set up agent registry
-AGENTS["grok-fast"]["executor"] = execute_grok_fast_task
-AGENTS["gemini"]["handoff"] = handle_gemini_handoff
-AGENTS["grok-4.1"]["handoff"] = handle_grok_4_1_handoff
 
 def handle_gemini_handoff(task):
     """
@@ -329,6 +330,11 @@ def execute_grok_fast_task(task):
     except FileNotFoundError:
         print(f"  [Grok-Fast] ERROR: 'grok_fast_client.py' not found at {SCRIPT_DIR.parent / 'clients' / 'grok_fast_client.py'}.")
         return False
+
+# Set up agent registry
+AGENTS["grok-fast"]["executor"] = execute_grok_fast_task
+AGENTS["gemini"]["handoff"] = handle_gemini_handoff
+AGENTS["grok-4.1"]["handoff"] = handle_grok_4_1_handoff
 
 # --- 4. Main Workflow ---
 

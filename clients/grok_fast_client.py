@@ -11,7 +11,11 @@ import datetime
 from pathlib import Path
 import re
 import requests
-from git_utils import git_commit_changes
+
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+
+from core.git_utils import git_commit_changes
 
 def call_gemini_30_pro(messages: list[dict], temperature: float = 0.2) -> str:
     import google.generativeai as genai
@@ -80,7 +84,7 @@ TARGET_FILES = [Path(p) for p in args.files]
 for p in TARGET_FILES:
     try:
         rel = p.relative_to(COLLAB_ROOT)
-        if rel.parts[0] not in {"grok", "shared"}:
+        if rel.parts[0] not in {"grok", "shared", "docs"}:
             print(f"PROTOCOL VIOLATION: Cannot write to {p}", file=sys.stderr)
             sys.exit(1)
     except ValueError:

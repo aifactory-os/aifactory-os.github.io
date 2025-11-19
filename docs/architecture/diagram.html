@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Architecture Diagram - AI Factory OS</title>
+  <style>
+    body { font-family: system-ui; line-height: 1.6; max-width: 1000px; margin: 40px auto; padding: 20px; }
+  </style>
+</head>
+<body>
+  <h1>System Architecture</h1>
+  <p>High-level architecture of the AI Factory OS multi-agent collaboration framework.</p>
+
+  <div id="diagram">
+    <!-- Mermaid diagram would go here -->
+    <pre>
+graph TD
+    A[User] --> B[Orchestrator]
+    B --> C[Grok Fast Client]
+    B --> D[Gemini Handoff]
+    B --> E[Grok 4.1 Handoff]
+
+    C --> F[Local API]
+    D --> G[Gemini Web UI]
+    E --> H[Grok 4.1 Web UI]
+
+    F --> I[Git Commit]
+    G --> I
+    H --> I
+
+    I --> J[Task Status Update]
+    J --> B
+    </pre>
+  </div>
+
+  <p><em>Architecture diagram will be generated and embedded here.</em></p>
+</body>
+</html>
